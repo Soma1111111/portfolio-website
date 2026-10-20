@@ -25,6 +25,18 @@ FILES=(index.html assets .nojekyll .github)
 
 command -v git >/dev/null || { echo "git is required"; exit 1; }
 
+# On WSL there is usually no credential helper in the Linux shell, but the
+# Windows Git Credential Manager is right there. Use it so `git push` works.
+GCM="/mnt/c/Program Files/Git/mingw64/bin/git-credential-manager.exe"
+if [ -x "$GCM" ] && [ -z "${GIT_CREDENTIAL_HELPER:-}" ]; then
+  HELPER="$(mktemp)"
+  printf '#!/bin/sh\nexec "%s" "$@"\n' "$GCM" > "$HELPER"
+  chmod +x "$HELPER"
+  export GIT_CONFIG_COUNT=1 GIT_CONFIG_KEY_0=credential.helper GIT_CONFIG_VALUE_0="$HELPER"
+  trap 'rm -f "$HELPER"' EXIT
+  echo "==> using Windows Git Credential Manager for auth"
+fi
+
 for REPO in "${REPOS[@]}"; do
   TMP="$(mktemp -d)"
   echo "==> $REPO"
