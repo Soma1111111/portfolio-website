@@ -1,0 +1,177 @@
+{
+  "user": {
+    "login": "Soma1111111",
+    "name": "T Soma Datta",
+    "avatar": "https://avatars.githubusercontent.com/u/122380808?v=4",
+    "url": "https://github.com/Soma1111111",
+    "company": "International Institute of Information Technology",
+    "location": "Bengaluru, India",
+    "bio": "Student at IIIT Bangalore building AI/ML, backend, cloud and game projects.",
+    "followers": 2,
+    "following": 2,
+    "publicRepos": 20,
+    "joined": "2023-01-10"
+  },
+  "repos": [
+    {
+      "name": "uno-rep",
+      "description": "Uno card game written in Rust, with a responsive web front-end for playing against the machine.",
+      "language": "Rust",
+      "url": "https://github.com/Soma1111111/uno-rep",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2026-10-20T18:55:05Z",
+      "topics": ["game", "rust", "web"]
+    },
+    {
+      "name": "Brain_Age_FMRI",
+      "description": "Predicts biological brain age from fMRI scans using 3D CNNs, with full training, evaluation and plotting notebooks.",
+      "language": "Jupyter Notebook",
+      "url": "https://github.com/Soma1111111/Brain_Age_FMRI",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2026-05-03T06:29:36Z",
+      "topics": ["machine-learning", "deep-learning", "neuroimaging"]
+    },
+    {
+      "name": "cloud-project-new-kube",
+      "description": "Cloud-native microservices containerised with Docker and orchestrated on Kubernetes, with a Java service core.",
+      "language": "Java",
+      "url": "https://github.com/Soma1111111/cloud-project-new-kube",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2026-02-10T14:43:24Z",
+      "topics": ["kubernetes", "docker", "cloud", "microservices"]
+    },
+    {
+      "name": "NLD",
+      "description": "Nonlinear dynamics lab work — bifurcation diagrams, phase portraits and chaotic system analysis in Python.",
+      "language": "Python",
+      "url": "https://github.com/Soma1111111/NLD",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2025-11-22T14:41:14Z",
+      "topics": ["python", "simulation", "chaos-theory"]
+    },
+    {
+      "name": "triterosync",
+      "description": "Multi-engine database synchronisation across PostgreSQL, MongoDB and Hive with timestamp, priority and max-value conflict resolution.",
+      "language": "Python",
+      "url": "https://github.com/Soma1111111/triterosync",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2025-06-23T19:40:39Z",
+      "topics": ["python", "postgresql", "mongodb", "hive", "etl"]
+    },
+    {
+      "name": "Face-and-object-detection",
+      "description": "Face and object detection with deep convolutional models over images and live video frames.",
+      "language": "Jupyter Notebook",
+      "url": "https://github.com/Soma1111111/Face-and-object-detection",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2025-03-25T11:32:34Z",
+      "topics": ["computer-vision", "deep-learning", "detection"]
+    },
+    {
+      "name": "french-translation-char-level-seq2seq-",
+      "description": "Character-level sequence-to-sequence neural machine translation for French, trained from scratch.",
+      "language": "Jupyter Notebook",
+      "url": "https://github.com/Soma1111111/french-translation-char-level-seq2seq-",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2025-03-25T10:58:10Z",
+      "topics": ["nlp", "seq2seq", "pytorch"]
+    },
+    {
+      "name": "Gamified-Language-Learning-App",
+      "description": "Duolingo-style gamified language learning platform with a Spring backend, model layer and web client.",
+      "language": "Java",
+      "url": "https://github.com/Soma1111111/Gamified-Language-Learning-App",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2025-03-10T17:46:26Z",
+      "topics": ["java", "spring", "web", "edtech"]
+    },
+    {
+      "name": "Hospital-Management-System",
+      "description": "Web application for hospital workflows — patients, appointments, records and admin.",
+      "language": "Java",
+      "url": "https://github.com/Soma1111111/Hospital-Management-System",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-12-18T15:42:02Z",
+      "topics": ["java", "web", "database"]
+    },
+    {
+      "name": "StudentInnovation",
+      "description": "Telugu language learning application built for students who struggle with reading, using an engaging, supportive interface.",
+      "language": "Java",
+      "url": "https://github.com/Soma1111111/StudentInnovation",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-12-28T11:24:02Z",
+      "topics": ["edtech", "java", "regional-language"]
+    },
+    {
+      "name": "PygameHacknite",
+      "description": "AntiDim — a side-scrolling hacker-themed platformer with a parallax background, jumping and obstacle physics.",
+      "language": "Python",
+      "url": "https://github.com/Soma1111111/PygameHacknite",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2023-04-20T16:17:35Z",
+      "topics": ["python", "pygame", "game"]
+    },
+    {
+      "name": "selabjenkins",
+      "description": "CI/CD pipeline project wiring a Java web app into Jenkins for automated builds and Selenium test runs.",
+      "language": "Java",
+      "url": "https://github.com/Soma1111111/selabjenkins",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-10-15T10:58:11Z",
+      "topics": ["ci-cd", "jenkins", "selenium"]
+    },
+    {
+      "name": "Image_editor",
+      "description": "Cross-platform desktop image editor with filters, transforms and a native-style UI built in Java, C++ and TypeScript.",
+      "language": "Java",
+      "url": "https://github.com/Soma1111111/Image_editor",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-04-19T07:23:51Z",
+      "topics": ["java", "cpp", "typescript", "image-processing"]
+    },
+    {
+      "name": "diabetes-prediction-diabetes-dataset",
+      "description": "Machine learning models that predict diabetes risk from patient health data, with analysis notebooks.",
+      "language": "Jupyter Notebook",
+      "url": "https://github.com/Soma1111111/diabetes-prediction-diabetes-dataset",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-07-02T16:06:05Z",
+      "topics": ["machine-learning", "scikit-learn", "healthcare"]
+    },
+    {
+      "name": "OS-lab",
+      "description": "Operating systems lab work in C — process scheduling, memory management and file system implementations.",
+      "language": "C",
+      "url": "https://github.com/Soma1111111/OS-lab",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-03-15T07:01:48Z",
+      "topics": ["c", "operating-systems", "systems"]
+    },
+    {
+      "name": "service-app-flutter",
+      "description": "Cross-platform Flutter service application for managing on-demand service bookings.",
+      "language": "Dart",
+      "url": "https://github.com/Soma1111111/service-app-flutter",
+      "stars": 0,
+      "forks": 0,
+      "updated": "2024-11-12T12:26:55Z",
+      "topics": ["flutter", "dart", "mobile"]
+    }
+  ]
+}
