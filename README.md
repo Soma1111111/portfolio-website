@@ -2,48 +2,50 @@
 
 A zero-dependency, single-page portfolio built from the public GitHub profile
 [`Soma1111111`](https://github.com/Soma1111111). Static HTML/CSS/JS — no build
-step, no bundler, nothing to install. It is designed to be pushed straight to
-GitHub Pages.
+step, no bundler, nothing to install. Motion is driven by
+[anime.js](https://animejs.com/) (loaded from a CDN).
 
 ## What is here
 
 ```
 index.html              the whole site
 assets/css/style.css    styles (dark + light theme, responsive)
-assets/js/main.js       theme, nav, typewriter, filters, live repo loading
+assets/js/anim.js       anime.js layer: intro timeline, reveals, tilt, cursor, ASCII rain
+assets/js/main.js       theme, nav, typewriter, project filters, live repo loading
 assets/data/repos.json  curated project list + profile fallback
 test/smoke.js           boots main.js in a DOM stub and checks the loader
-deploy.sh               one-command deploy to the Pages repo
-.github/workflows/      optional Actions-based Pages deploy
+deploy.sh               one-command deploy to both Pages repos
+.github/workflows/      Actions-based Pages deploy
 ```
+
+## Live sites
+
+| URL | repo |
+|---|---|
+| https://soma1111111.github.io/ | `Soma1111111/soma1111111.github.io` (canonical) |
+| https://soma1111111.github.io/portfolio-website/ | `Soma1111111/portfolio-website` (Actions) |
+
+Both are kept in sync by `deploy.sh`.
 
 ## Deploy
 
-### Option A — script (fastest)
-
 ```bash
-./deploy.sh
+./deploy.sh --dry-run   # preview the commits
+./deploy.sh             # pushes to both repos
 ```
 
-It clones `Soma1111111/soma1111111.github.io`, copies the site in, commits and
-pushes to `main`. Add `--dry-run` to preview the commit first.
+`portfolio-website` deploys through `.github/workflows/pages.yml` (Actions);
+`soma1111111.github.io` uses the plain branch build. If Pages has never been
+enabled on a repo, open **Settings → Pages → Source** once.
 
-If the Pages site has never been enabled, open
-**repo → Settings → Pages → Source: Deploy from a branch → `main` / `(root)`**
-once. After that every push goes live automatically.
+### Previewing a branch
 
-### Option B — GitHub Actions
-
-The repo already contains `.github/workflows/pages.yml`. Push this folder to any
-repository and enable **Settings → Pages → Source: GitHub Actions**.
-
-### Option C — manual
+The workflow also runs on the `feat/animated-v2` branch, so a branch can be
+pushed and viewed at the project-page URL before it is merged:
 
 ```bash
-git clone https://github.com/Soma1111111/soma1111111.github.io.git
-cd soma1111111.github.io
-# copy index.html, assets/ and .nojekyll from this folder over the repo root
-git add -A && git commit -m "Deploy portfolio" && git push
+git push origin feat/animated-v2
+# -> https://soma1111111.github.io/portfolio-website/
 ```
 
 ## Live GitHub data
@@ -55,6 +57,11 @@ offline it falls back to `assets/data/repos.json`, so the page is never empty.
 The public API allows 60 requests/hour per IP — plenty for a portfolio, but if
 you expect more traffic, proxy the call through a tiny serverless function and
 cache it.
+
+## If anime.js does not load
+
+Every animation is additive: without the CDN the site still renders, reads and
+navigates — it just does not move.
 
 ## Before you publish
 
