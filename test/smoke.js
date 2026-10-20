@@ -43,6 +43,7 @@ class El {
   setAttribute(k, v) { this.attrs[k] = v; }
   getAttribute(k) { return this.attrs[k]; }
   addEventListener(t, fn) { (this.listeners[t] = this.listeners[t] || []).push(fn); }
+  dispatchEvent(e) { (this.listeners[e.type] || []).forEach((f) => f(e)); return true; }
   querySelector(sel) { return find(this, sel); }
   querySelectorAll(sel) { return findAll(this, sel); }
   click() { (this.listeners.click || []).forEach((f) => f()); }
@@ -114,6 +115,7 @@ function run({ apiFails }) {
     Number,
     isNaN,
     localStorage: { getItem: () => null, setItem() {} },
+    CustomEvent: class CustomEvent { constructor(type, init) { this.type = type; this.detail = init && init.detail; } },
     matchMedia: () => ({ matches: false }),
     IntersectionObserver: class { observe() {} unobserve() {} },
     fetch: (url) => {

@@ -11,7 +11,7 @@
   var LOCAL = "assets/data/repos.json";
 
   // Repos that are not "projects" (profile README, this site, forks of tutorials).
-  var EXCLUDE = ["soma1111111", "soma1111111.github.io", "first-contributions", "Pong_in_Pygame"];
+  var EXCLUDE = ["soma1111111", "soma1111111.github.io", "portfolio-website", "first-contributions", "Pong_in_Pygame"];
 
   // Secondary technologies per repo, so the filters actually match.
   var EXTRA_LANGS = {
@@ -40,6 +40,10 @@
 
   var $ = function (sel, root) { return (root || document).querySelector(sel); };
   var $$ = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+
+  // Cards start hidden only when the animation layer will reveal them.
+  var ANIMATED = !!window.anime &&
+    !(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
   function el(tag, cls, text) {
     var n = document.createElement(tag);
@@ -92,24 +96,6 @@
     });
   }
 
-  /* ---------------- reveal on scroll ---------------- */
-  var revealObserver = "IntersectionObserver" in window
-    ? new IntersectionObserver(function (entries) {
-        entries.forEach(function (e) {
-          if (e.isIntersecting) {
-            e.target.classList.add("in");
-            revealObserver.unobserve(e.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: "0px 0px -40px 0px" })
-    : null;
-
-  function observeReveals(root) {
-    $$(".reveal", root).forEach(function (n) {
-      if (revealObserver) revealObserver.observe(n); else n.classList.add("in");
-    });
-  }
-
   /* ---------------- typewriter ---------------- */
   var typed = $("#typed");
   var PHRASES = [
@@ -121,10 +107,14 @@
   ];
 
   if (typed) {
+    var caret = document.createElement("span");
+    caret.className = "caret";
+    caret.textContent = "▌";
     var pi = 0, ci = 0, deleting = false;
     function tick() {
       var p = PHRASES[pi];
       typed.textContent = p.slice(0, ci);
+      typed.appendChild(caret);
       if (!deleting && ci < p.length) { ci++; setTimeout(tick, 65); }
       else if (!deleting && ci === p.length) { deleting = true; setTimeout(tick, 1600); }
       else if (deleting && ci > 0) { ci--; setTimeout(tick, 32); }
@@ -246,8 +236,9 @@
     }
 
     list.forEach(function (r, i) {
-      var card = el("article", "project reveal");
-      card.style.transitionDelay = (i % 3) * 70 + "ms";
+      var card = el("article", "project");
+      if (ANIMATED) { card.style.opacity = "0"; card.style.transform = "translateY(28px)"; }
+      card.setAttribute("data-index", i);
 
       var h = el("h3");
       var a = el("a", null, r.name);
@@ -278,14 +269,15 @@
       card.appendChild(foot);
 
       grid.appendChild(card);
-      if (revealObserver) revealObserver.observe(card);
     });
   }
 
   /* ---------------- stats ---------------- */
   function setStat(name, value) {
     var node = $('[data-stat="' + name + '"]');
-    if (node) node.textContent = value;
+    if (!node) return;
+    node.setAttribute("data-count", value);
+    node.textContent = value;
   }
 
   function updateProfile(user) {
@@ -318,11 +310,12 @@
     if (repoMeta) {
       repoMeta.textContent = repos.length + " projects (" + live + " data) · last synced " + new Date().toLocaleString();
     }
+
+    // lets the animation layer start its counters with the final numbers
+    document.dispatchEvent(new CustomEvent("portfolio:data", { detail: { repos: repos.length } }));
   });
 
   /* ---------------- misc ---------------- */
   var year = $("#year");
   if (year) year.textContent = new Date().getFullYear();
-
-  observeReveals(document);
 })();

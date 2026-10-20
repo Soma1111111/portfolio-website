@@ -6,7 +6,7 @@
 <title>T Soma Datta — AI/ML & Backend Developer</title>
 <meta name="description" content="Portfolio of T Soma Datta, a student developer at IIIT Bangalore building AI/ML, backend, cloud and game projects. Explore source code, live demos and GitHub activity." />
 <meta name="author" content="T Soma Datta" />
-<meta name="theme-color" content="#0b0f19" />
+<meta name="theme-color" content="#05060c" />
 
 <meta property="og:type" content="website" />
 <meta property="og:title" content="T Soma Datta — AI/ML & Backend Developer" />
@@ -17,16 +17,30 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%A8%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/css/style.css" />
+
+<script src="https://cdn.jsdelivr.net/npm/animejs@4.5.0/dist/bundles/anime.umd.min.js" defer></script>
+<script src="assets/js/anim.js" defer></script>
+<script src="assets/js/main.js" defer></script>
 </head>
 <body>
+
+<div class="cursor" id="cursor" aria-hidden="true">
+  <div class="cursor-dot"></div>
+  <div class="cursor-ring"></div>
+</div>
+<div class="scroll-progress" aria-hidden="true"><i id="progressBar"></i></div>
+<div class="noise" aria-hidden="true"></div>
+
 <a class="skip-link" href="#main">Skip to content</a>
 
 <div class="backdrop" aria-hidden="true">
+  <canvas class="stars" id="stars"></canvas>
   <div class="aurora a1"></div>
   <div class="aurora a2"></div>
   <div class="aurora a3"></div>
+  <div class="aurora a4"></div>
   <div class="grid"></div>
 </div>
 
@@ -63,68 +77,109 @@
   <!-- ============ HERO ============ -->
   <section class="hero" id="home">
     <div class="wrap hero-inner">
-      <div class="hero-copy reveal">
-        <p class="eyebrow"><span class="pulse-dot"></span> Available for opportunities</p>
-        <h1>
-          Hi, I'm <span class="grad-text">Soma Datta</span>
-          <span class="type-line" id="typed"></span>
+      <div class="hero-copy">
+        <p class="eyebrow" data-hero="eyebrow"><span class="pulse-dot"></span> Available for opportunities</p>
+
+        <h1 class="hero-title">
+          <span class="hero-line">Hi, I'm</span>
+          <span class="name-mask"><span class="grad-text">Soma Datta</span></span>
         </h1>
-        <p class="lede">
+        <span class="type-line" id="typed"></span>
+
+        <p class="lede" data-hero="lede">
           Student developer at <strong>IIIT Bangalore</strong>, Bengaluru. I build things that
           work — machine-learning models, distributed backends, cloud pipelines and games
           that are actually fun to play.
         </p>
 
-        <div class="hero-actions">
-          <a class="btn btn-primary" href="#projects">
-            View projects
+        <div class="hero-actions" data-hero="actions">
+          <a class="btn btn-primary magnetic" href="#projects">
+            <span class="btn-label">View projects</span>
             <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
           </a>
-          <a class="btn btn-ghost" href="https://github.com/Soma1111111" target="_blank" rel="noopener">
+          <a class="btn btn-ghost magnetic" href="https://github.com/Soma1111111" target="_blank" rel="noopener">
+            <span class="btn-label">GitHub profile</span>
             <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-            GitHub profile
           </a>
         </div>
 
-        <ul class="stat-row" id="statRow">
-          <li class="reveal"><strong data-stat="repos">20</strong><span>Public repos</span></li>
-          <li class="reveal"><strong data-stat="followers">2</strong><span>Followers</span></li>
-          <li class="reveal"><strong data-stat="years">3</strong><span>Years on GitHub</span></li>
-          <li class="reveal"><strong data-stat="projects">16</strong><span>Projects</span></li>
-        </ul>
-      </div>
-
-      <div class="hero-visual reveal">
-        <div class="avatar-card">
-          <div class="avatar-ring"></div>
-          <img class="avatar" src="https://avatars.githubusercontent.com/u/122380808?v=4" alt="T Soma Datta" width="180" height="180" />
-          <div class="float-card fc-1"><span class="dot py"></span>python</div>
-          <div class="float-card fc-2"><span class="dot rs"></span>rust</div>
-          <div class="float-card fc-3"><span class="dot jv"></span>java</div>
+        <div class="term-chip" data-hero="chip">
+          <span class="prompt">$</span>
+          <code id="cloneCmd">git clone https://github.com/Soma1111111</code>
+          <button class="copy-btn" id="copyBtn" type="button" aria-label="Copy clone command" title="Copy">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          </button>
         </div>
 
-        <div class="code-window" aria-hidden="true">
-          <div class="cw-bar"><i></i><i></i><i></i><span>soma.py</span></div>
-          <pre><code><span class="c-k">const</span> <span class="c-f">soma</span> = {
-  <span class="c-p">name</span>: <span class="c-s">"T Soma Datta"</span>,
-  <span class="c-p">role</span>: <span class="c-s">"AI / Backend Dev"</span>,
-  <span class="c-p">college</span>: <span class="c-s">"IIIT Bangalore"</span>,
-  <span class="c-p">stack</span>: [<span class="c-s">"Python"</span>, <span class="c-s">"Java"</span>, <span class="c-s">"Rust"</span>, <span class="c-s">"C"</span>],
-  <span class="c-p">currentlyBuilding</span>: <span class="c-s">"agents &amp; games"</span>,
-  <span class="c-p">coffee</span>: <span class="c-n">Infinity</span>
-};</code></pre>
+        <ul class="stat-row" data-hero="stats">
+          <li><strong data-count="20">20</strong><span>Public repos</span></li>
+          <li><strong data-count="2">2</strong><span>Followers</span></li>
+          <li><strong data-count="3">3</strong><span>Years on GitHub</span></li>
+          <li><strong data-count="16">16</strong><span>Projects</span></li>
+        </ul>
+
+        <p class="mono-note" data-hero="stats"><span>//</span> building in public since 2023</p>
+      </div>
+
+      <div class="hero-visual" data-hero="visual">
+        <div class="dial" id="dial">
+          <svg class="dial-svg" viewBox="0 0 400 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="sweepGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#22d3ee" />
+                <stop offset="55%" stop-color="#7c3aed" />
+                <stop offset="100%" stop-color="#f472b6" />
+              </linearGradient>
+            </defs>
+            <circle class="dial-track" cx="200" cy="200" r="176" />
+            <circle class="dial-track thin" cx="200" cy="200" r="146" />
+            <g class="dial-ticks" id="dialTicks"></g>
+            <g class="dial-arcs" id="dialArcs"></g>
+            <g class="dial-sweep" id="dialSweep">
+              <path d="M200 200 L200 34 A166 166 0 0 1 320 130 Z" />
+            </g>
+          </svg>
+          <div class="dial-core">
+            <img class="avatar" src="https://avatars.githubusercontent.com/u/122380808?v=4" alt="T Soma Datta" width="180" height="180" />
+          </div>
+          <span class="dial-label dl-1">Python</span>
+          <span class="dial-label dl-2">Java</span>
+          <span class="dial-label dl-3">Rust</span>
+          <span class="dial-label dl-4">K8s</span>
         </div>
       </div>
     </div>
+
+    <a class="scroll-cue" href="#about" aria-label="Scroll to about section">
+      <span>scroll</span><i></i>
+    </a>
   </section>
+
+  <!-- ============ MARQUEE ============ -->
+  <div class="marquee" aria-hidden="true">
+    <div class="marquee-track" id="marquee">
+      <div class="marquee-set">
+        <span>Python</span><i>✦</i><span>Java</span><i>✦</i><span>Rust</span><i>✦</i><span>C++</span><i>✦</i>
+        <span>PyTorch</span><i>✦</i><span>Docker</span><i>✦</i><span>Kubernetes</span><i>✦</i><span>Spring Boot</span><i>✦</i>
+        <span>FastAPI</span><i>✦</i><span>PostgreSQL</span><i>✦</i><span>MongoDB</span><i>✦</i><span>Flask</span><i>✦</i>
+        <span>React</span><i>✦</i><span>Flutter</span><i>✦</i><span>Pygame</span><i>✦</i><span>Jupyter</span><i>✦</i>
+      </div>
+      <div class="marquee-set">
+        <span>Python</span><i>✦</i><span>Java</span><i>✦</i><span>Rust</span><i>✦</i><span>C++</span><i>✦</i>
+        <span>PyTorch</span><i>✦</i><span>Docker</span><i>✦</i><span>Kubernetes</span><i>✦</i><span>Spring Boot</span><i>✦</i>
+        <span>FastAPI</span><i>✦</i><span>PostgreSQL</span><i>✦</i><span>MongoDB</span><i>✦</i><span>Flask</span><i>✦</i>
+        <span>React</span><i>✦</i><span>Flutter</span><i>✦</i><span>Pygame</span><i>✦</i><span>Jupyter</span><i>✦</i>
+      </div>
+    </div>
+  </div>
 
   <!-- ============ ABOUT ============ -->
   <section class="section" id="about">
     <div class="wrap">
-      <h2 class="section-title reveal"><span class="hash">#</span> about me</h2>
+      <h2 class="section-title"><span class="hash">#</span> <span data-split>about me</span></h2>
 
       <div class="about-grid">
-        <div class="about-text reveal">
+        <div class="about-text" data-reveal>
           <p>
             I'm <strong>T Soma Datta</strong>, a student at the
             <strong>International Institute of Information Technology, Bangalore</strong>.
@@ -142,14 +197,14 @@
             and turning vague ideas into repos that run.
           </p>
 
-          <ul class="chips chips-lg" aria-label="Interests">
+          <ul class="chips chips-lg">
             <li>Agentic AI</li><li>Machine Learning</li><li>Backend Engineering</li>
             <li>Cloud &amp; Kubernetes</li><li>Game Development</li><li>Open Source</li>
           </ul>
         </div>
 
-        <div class="about-cards">
-          <article class="mini-card reveal">
+        <div class="about-cards" data-reveal>
+          <article class="mini-card tilt">
             <h3>Currently learning</h3>
             <ul class="tick">
               <li>Data Structures &amp; Algorithms</li>
@@ -158,7 +213,7 @@
               <li>Open Source contribution</li>
             </ul>
           </article>
-          <article class="mini-card reveal">
+          <article class="mini-card tilt">
             <h3>Currently building</h3>
             <ul class="tick">
               <li>Uno — Rust card game with a web front-end</li>
@@ -166,7 +221,7 @@
               <li>Cloud microservices on Kubernetes</li>
             </ul>
           </article>
-          <article class="mini-card reveal">
+          <article class="mini-card tilt">
             <h3>Fun facts</h3>
             <ul class="tick">
               <li>I'd rather build something you can play than a slide deck</li>
@@ -182,41 +237,47 @@
   <!-- ============ SKILLS ============ -->
   <section class="section" id="skills">
     <div class="wrap">
-      <h2 class="section-title reveal"><span class="hash">#</span> tech arsenal</h2>
-      <p class="section-sub reveal">The tools I reach for, by category.</p>
+      <h2 class="section-title"><span class="hash">#</span> <span data-split>tech arsenal</span></h2>
+      <p class="section-sub">The tools I reach for, by category.</p>
 
-      <div class="skill-grid">
-        <article class="skill-card reveal">
+      <div class="skill-grid" data-reveal>
+        <article class="skill-card tilt">
+          <span class="spot" aria-hidden="true"></span>
           <h3><span class="ico">⌘</span> Languages</h3>
           <ul class="chips">
             <li>Python</li><li>Java</li><li>C</li><li>C++</li><li>Rust</li><li>JavaScript</li><li>SQL</li><li>Shell</li>
           </ul>
         </article>
-        <article class="skill-card reveal">
+        <article class="skill-card tilt">
+          <span class="spot" aria-hidden="true"></span>
           <h3><span class="ico">◈</span> Backend &amp; Web</h3>
           <ul class="chips">
             <li>Spring Boot</li><li>FastAPI</li><li>Flask</li><li>React</li><li>Node.js</li><li>REST</li><li>Jupyter</li>
           </ul>
         </article>
-        <article class="skill-card reveal">
+        <article class="skill-card tilt">
+          <span class="spot" aria-hidden="true"></span>
           <h3><span class="ico">✦</span> Data Science &amp; AI</h3>
           <ul class="chips">
             <li>PyTorch</li><li>TensorFlow</li><li>NumPy</li><li>Pandas</li><li>scikit-learn</li><li>Matplotlib</li><li>Agentic AI</li>
           </ul>
         </article>
-        <article class="skill-card reveal">
+        <article class="skill-card tilt">
+          <span class="spot" aria-hidden="true"></span>
           <h3><span class="ico">⬡</span> Databases</h3>
           <ul class="chips">
             <li>PostgreSQL</li><li>MongoDB</li><li>Hive</li><li>Redis</li><li>FalkorDB</li><li>SQL</li>
           </ul>
         </article>
-        <article class="skill-card reveal">
+        <article class="skill-card tilt">
+          <span class="spot" aria-hidden="true"></span>
           <h3><span class="ico">⟐</span> Cloud &amp; DevOps</h3>
           <ul class="chips">
             <li>Docker</li><li>Kubernetes</li><li>Jenkins</li><li>Git</li><li>GitHub Actions</li><li>Linux</li><li>VS Code</li>
           </ul>
         </article>
-        <article class="skill-card reveal">
+        <article class="skill-card tilt">
+          <span class="spot" aria-hidden="true"></span>
           <h3><span class="ico">◆</span> Mobile &amp; Games</h3>
           <ul class="chips">
             <li>Flutter</li><li>Dart</li><li>Java</li><li>Pygame</li><li>C++ / SDL</li><li>Game Design</li>
@@ -229,13 +290,13 @@
   <!-- ============ PROJECTS ============ -->
   <section class="section" id="projects">
     <div class="wrap">
-      <h2 class="section-title reveal"><span class="hash">#</span> projects</h2>
-      <p class="section-sub reveal">
+      <h2 class="section-title"><span class="hash">#</span> <span data-split>projects</span></h2>
+      <p class="section-sub">
         Pulled straight from <a href="https://github.com/Soma1111111?tab=repositories" target="_blank" rel="noopener">github.com/Soma1111111</a>
         — filtered by stack.
       </p>
 
-      <div class="filters reveal" id="filters" role="tablist" aria-label="Filter projects by language"></div>
+      <div class="filters" id="filters" role="tablist" aria-label="Filter projects by language"></div>
 
       <div class="project-grid" id="projectGrid">
         <p class="muted">Loading projects…</p>
@@ -248,24 +309,18 @@
   <!-- ============ GITHUB ============ -->
   <section class="section" id="github">
     <div class="wrap">
-      <h2 class="section-title reveal"><span class="hash">#</span> github activity</h2>
-      <p class="section-sub reveal">Live numbers, straight from the GitHub API.</p>
+      <h2 class="section-title"><span class="hash">#</span> <span data-split>github activity</span></h2>
+      <p class="section-sub">Live numbers, straight from the GitHub API.</p>
 
-      <div class="gh-grid">
-        <div class="gh-card reveal">
-          <img src="https://github-readme-stats.vercel.app/api?username=Soma1111111&show_icons=true&theme=radical&hide_border=true" alt="GitHub stats for Soma1111111" loading="lazy" />
-        </div>
-        <div class="gh-card reveal">
-          <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Soma1111111&layout=compact&hide=jupyter%20notebook&theme=radical&hide_border=true" alt="Most used languages" loading="lazy" />
-        </div>
-        <div class="gh-card reveal">
-          <img src="https://github-activity-graph.vercel.app/graph?username=Soma1111111&theme=react&hide_border=true&area=true" alt="Contribution activity graph" loading="lazy" />
-        </div>
+      <div class="gh-grid" data-reveal>
+        <div class="gh-card tilt"><img src="https://github-readme-stats.vercel.app/api?username=Soma1111111&show_icons=true&theme=radical&hide_border=true" alt="GitHub stats for Soma1111111" loading="lazy" /></div>
+        <div class="gh-card tilt"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=Soma1111111&layout=compact&hide=jupyter%20notebook&theme=radical&hide_border=true" alt="Most used languages" loading="lazy" /></div>
+        <div class="gh-card tilt"><img src="https://github-activity-graph.vercel.app/graph?username=Soma1111111&theme=react&hide_border=true&area=true" alt="Contribution activity graph" loading="lazy" /></div>
       </div>
 
-      <div class="gh-cta reveal">
+      <div class="gh-cta" data-reveal>
         <p>Like what you see? My code is all public — browse it, fork it, or open an issue.</p>
-        <a class="btn btn-ghost" href="https://github.com/Soma1111111" target="_blank" rel="noopener">Visit GitHub profile</a>
+        <a class="btn btn-ghost magnetic" href="https://github.com/Soma1111111" target="_blank" rel="noopener"><span class="btn-label">Visit GitHub profile</span></a>
       </div>
     </div>
   </section>
@@ -273,29 +328,27 @@
   <!-- ============ CONTACT ============ -->
   <section class="section contact-section" id="contact">
     <div class="wrap">
-      <div class="contact-card reveal">
-        <h2>Let's build something</h2>
+      <div class="contact-card" data-reveal>
+        <h2 data-split>Let's build something</h2>
         <p>
           Open to internships, open-source collaboration and interesting problems.
           Reach me on GitHub, LinkedIn, or drop an email — I read all three.
         </p>
         <div class="contact-actions">
-          <a class="btn btn-primary" href="https://github.com/Soma1111111" target="_blank" rel="noopener">
+          <a class="btn btn-primary magnetic" href="https://github.com/Soma1111111" target="_blank" rel="noopener">
+            <span class="btn-label">GitHub</span>
             <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.4 7.4 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-            GitHub
           </a>
-          <a class="btn btn-ghost" href="https://www.linkedin.com/in/soma-datta-743704285/" target="_blank" rel="noopener">
+          <a class="btn btn-ghost magnetic" href="https://www.linkedin.com/in/soma-datta-743704285/" target="_blank" rel="noopener">
+            <span class="btn-label">LinkedIn</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5ZM2.4 21h5.16V9.2H2.4V21Zm8.32 0h5.15v-6.05c0-1.6.3-3.14 2.28-3.14 1.96 0 1.98 1.83 1.98 3.24V21h5.16v-6.87c0-3.43-.74-6.06-4.74-6.06-1.93 0-3.22 1.06-3.75 2.07h-.05V9.2H10.72V21Z"/></svg>
-            LinkedIn
           </a>
-          <a class="btn btn-ghost" href="mailto:tsomadatta2004@gmail.com">
+          <a class="btn btn-ghost magnetic" href="mailto:tsomadatta2004@gmail.com">
+            <span class="btn-label">Email</span>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2.5"/><path d="m3 7 9 6 9-6"/></svg>
-            Email
           </a>
         </div>
-        <p class="small muted contact-hint">
-          Based in Bengaluru, India — open to internships, collaborations and interesting problems.
-        </p>
+        <p class="small muted contact-hint">Based in Bengaluru, India — open to internships, collaborations and interesting problems.</p>
       </div>
     </div>
   </section>
@@ -303,11 +356,10 @@
 
 <footer class="footer">
   <div class="wrap footer-inner">
-    <p>© <span id="year">2026</span> T Soma Datta — built with vanilla HTML, CSS &amp; JS. · <a href="mailto:tsomadatta2004@gmail.com">tsomadatta2004@gmail.com</a></p>
+    <p>© <span id="year">2026</span> T Soma Datta — built with vanilla HTML, CSS, JS &amp; <a href="https://animejs.com/" target="_blank" rel="noopener">anime.js</a>. · <a href="mailto:tsomadatta2004@gmail.com">tsomadatta2004@gmail.com</a></p>
     <a class="to-top" href="#home" aria-label="Back to top">↑</a>
   </div>
 </footer>
 
-<script src="assets/js/main.js"></script>
 </body>
 </html>
