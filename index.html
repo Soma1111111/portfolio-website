@@ -103,6 +103,14 @@
           </a>
         </div>
 
+        <div class="term-chip" data-hero="chip">
+          <span class="prompt">$</span>
+          <code id="cloneCmd">git clone https://github.com/Soma1111111</code>
+          <button class="copy-btn" id="copyBtn" type="button" aria-label="Copy clone command" title="Copy">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>
+          </button>
+        </div>
+
         <ul class="stat-row" data-hero="stats">
           <li><strong data-count="20">20</strong><span>Public repos</span></li>
           <li><strong data-count="2">2</strong><span>Followers</span></li>
@@ -114,21 +122,30 @@
       </div>
 
       <div class="hero-visual" data-hero="visual">
-        <div class="orbit-wrap">
-          <div class="orbit" id="orbit">
-            <span class="orbit-item" style="--a:0deg"><b>Python</b></span>
-            <span class="orbit-item" style="--a:90deg"><b>Rust</b></span>
-            <span class="orbit-item" style="--a:180deg"><b>Java</b></span>
-            <span class="orbit-item" style="--a:270deg"><b>K8s</b></span>
+        <div class="dial" id="dial">
+          <svg class="dial-svg" viewBox="0 0 400 400" aria-hidden="true">
+            <defs>
+              <linearGradient id="sweepGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#22d3ee" />
+                <stop offset="55%" stop-color="#7c3aed" />
+                <stop offset="100%" stop-color="#f472b6" />
+              </linearGradient>
+            </defs>
+            <circle class="dial-track" cx="200" cy="200" r="176" />
+            <circle class="dial-track thin" cx="200" cy="200" r="146" />
+            <g class="dial-ticks" id="dialTicks"></g>
+            <g class="dial-arcs" id="dialArcs"></g>
+            <g class="dial-sweep" id="dialSweep">
+              <path d="M200 200 L200 34 A166 166 0 0 1 320 130 Z" />
+            </g>
+          </svg>
+          <div class="dial-core">
+            <img class="avatar" src="https://avatars.githubusercontent.com/u/122380808?v=4" alt="T Soma Datta" width="180" height="180" />
           </div>
-          <div class="avatar-ring"></div>
-          <img class="avatar" src="https://avatars.githubusercontent.com/u/122380808?v=4" alt="T Soma Datta" width="180" height="180" />
-          <div class="avatar-glow"></div>
-        </div>
-
-        <div class="code-window" aria-hidden="true">
-          <div class="cw-bar"><i></i><i></i><i></i><span>soma.py</span></div>
-          <pre><code><span class="cl">const <b>soma</b> = {</span><span class="cl">  name: <i>"T Soma Datta"</i>,</span><span class="cl">  role: <i>"AI / Backend Dev"</i>,</span><span class="cl">  college: <i>"IIIT Bangalore"</i>,</span><span class="cl">  stack: [<i>"Python"</i>, <i>"Java"</i>, <i>"Rust"</i>],</span><span class="cl">  currentlyBuilding: <i>"agents &amp; games"</i>,</span><span class="cl">  coffee: <u>Infinity</u></span><span class="cl">};</span></code></pre>
+          <span class="dial-label dl-1">Python</span>
+          <span class="dial-label dl-2">Java</span>
+          <span class="dial-label dl-3">Rust</span>
+          <span class="dial-label dl-4">K8s</span>
         </div>
       </div>
     </div>

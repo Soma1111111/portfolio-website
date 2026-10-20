@@ -70,7 +70,7 @@
     // hide everything the intro touches BEFORE the timeline starts, otherwise
     // late timeline entries would flash visible and then jump.
     utils.set(
-      "[data-hero=eyebrow], .hero-line, #typed, [data-hero=lede], .hero-actions .btn, .stat-row li, .orbit-wrap, .code-window, .code-window .cl, .scroll-cue, .grad-text",
+      "[data-hero=eyebrow], .hero-line, #typed, [data-hero=lede], .hero-actions .btn, .stat-row li, .dial, .term-chip, .scroll-cue, .grad-text",
       { opacity: 0 }
     );
 
@@ -89,10 +89,9 @@
     tl.add(".hero-actions .btn", {
       opacity: [0, 1], y: [26, 0], scale: [0.94, 1], delay: stagger(110),
     }, 820);
-    tl.add(".stat-row li", { opacity: [0, 1], y: [26, 0], delay: stagger(90) }, 950);
-    tl.add(".orbit-wrap", { opacity: [0, 1], scale: [0.55, 1], rotate: [-30, 0], duration: 1300 }, 780);
-    tl.add(".code-window", { opacity: [0, 1], y: [46, 0], scale: [0.94, 1], duration: 1100 }, 1000);
-    tl.add(".code-window .cl", { opacity: [0, 1], x: [-16, 0], duration: 520, delay: stagger(65) }, 1150);
+    tl.add(".term-chip", { opacity: [0, 1], y: [22, 0] }, 960);
+    tl.add(".stat-row li", { opacity: [0, 1], y: [26, 0], delay: stagger(90) }, 1040);
+    tl.add(".dial", { opacity: [0, 1], scale: [0.82, 1], rotate: [-18, 0], duration: 1400 }, 760);
     tl.add(".scroll-cue", { opacity: [0, 1], y: [18, 0] }, 1600);
   }
 
@@ -232,8 +231,8 @@
         var y = d.y * size;
         for (var k = 0; k < d.s.length; k++) {
           ctx.fillStyle = k === 0
-            ? "rgba(214,244,255,0.95)"
-            : "rgba(125,211,252," + Math.max(0.12, 0.55 - k * 0.07).toFixed(2) + ")";
+            ? "rgba(214,244,255,0.55)"
+            : "rgba(125,211,252," + Math.max(0.08, 0.3 - k * 0.05).toFixed(2) + ")";
           ctx.fillText(d.s[k], x, y + k * size);
         }
         d.y += d.v;
@@ -422,6 +421,123 @@
     }, { passive: true });
   }
 
+  /* ---------------- the dial ---------------- */
+  function dial() {
+    var box = $("#dial");
+    if (!box) return;
+
+    var arcsGroup = $("#dialArcs");
+    var ticksGroup = $("#dialTicks");
+    var sweep = $("#dialSweep");
+    var R = 168;
+    var C = 2 * Math.PI * R;
+    var MIX = [
+      { color: "#3776ab", share: 0.30 },
+      { color: "#f89820", share: 0.20 },
+      { color: "#DA5B0B", share: 0.16 },
+      { color: "#dea584", share: 0.13 },
+      { color: "#8b949e", share: 0.11 },
+      { color: "#22d3ee", share: 0.10 }
+    ];
+
+    // arcs
+    var offset = 0;
+    var arcs = [];
+    MIX.forEach(function (m) {
+      var len = Math.max(18, m.share * C - 14);
+      var c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      c.setAttribute("cx", "200");
+      c.setAttribute("cy", "200");
+      c.setAttribute("r", String(R));
+      c.setAttribute("fill", "none");
+      c.setAttribute("stroke", m.color);
+      c.setAttribute("stroke-width", "3.5");
+      c.setAttribute("stroke-linecap", "round");
+      c.setAttribute("stroke-dasharray", len + " " + C);
+      c.style.strokeDashoffset = String(-(offset + len));
+      arcsGroup.appendChild(c);
+      arcs.push({ el: c, from: -(offset + len), to: -offset });
+      offset += len + 14;
+    });
+
+    // ticks
+    var TICKS = 72;
+    for (var i = 0; i < TICKS; i++) {
+      var a = (i / TICKS) * Math.PI * 2 - Math.PI / 2;
+      var inner = i % 6 === 0 ? 178 : 181;
+      var line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", (200 + Math.cos(a) * inner).toFixed(2));
+      line.setAttribute("y1", (200 + Math.sin(a) * inner).toFixed(2));
+      line.setAttribute("x2", (200 + Math.cos(a) * 186).toFixed(2));
+      line.setAttribute("y2", (200 + Math.sin(a) * 186).toFixed(2));
+      ticksGroup.appendChild(line);
+    }
+    var ticks = Array.prototype.slice.call(ticksGroup.children);
+
+    // animate in
+    utils.set(ticks, { opacity: 0 });
+
+    animate(arcs.map(function (a) { return a.el; }), {
+      strokeDashoffset: function (el, i) { return arcs[i].to; },
+      duration: 1500,
+      ease: "inOutQuart",
+      delay: stagger(120),
+    });
+    animate(ticks, { opacity: [0, 0.55], duration: 700, delay: stagger(14) });
+
+    // sweeping radar, nudged by the cursor
+    var angle = { a: 0 };
+    var pointer = 0;
+    animate(angle, {
+      a: 360,
+      duration: 9000,
+      ease: "linear",
+      loop: true,
+      onUpdate: function () {
+        sweep.style.transform = "rotate(" + (angle.a + pointer) + "deg)";
+        sweep.style.transformOrigin = "200px 200px";
+      },
+    });
+
+    box.addEventListener("pointermove", function (e) {
+      var r = box.getBoundingClientRect();
+      var deg = Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
+      pointer = deg * 0.35;
+    });
+    box.addEventListener("pointerleave", function () { pointer = 0; });
+
+    box.addEventListener("pointerenter", function () {
+      animate(box.querySelector(".dial-core"), { scale: 1.06, duration: 500, ease: "outElastic(1, .6)" });
+    });
+    box.addEventListener("pointerleave", function () {
+      animate(box.querySelector(".dial-core"), { scale: 1, duration: 600, ease: "outElastic(1, .6)" });
+    });
+  }
+
+  /* ---------------- copy-to-clipboard ---------------- */
+  function copyChip() {
+    var btn = $("#copyBtn");
+    var code = $("#cloneCmd");
+    if (!btn || !code) return;
+
+    btn.addEventListener("click", function () {
+      var text = code.textContent;
+      var done = function () {
+        btn.classList.add("done");
+        btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>';
+        setTimeout(function () {
+          btn.classList.remove("done");
+          btn.innerHTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+        }, 1800);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, done);
+      } else {
+        done();
+      }
+    });
+  }
+
   /* ---------------- boot ---------------- */
   function start() {
     if (reduced) {
@@ -443,6 +559,8 @@
   asciiRain();
   cursor();
   watchProjects();
+  dial();
+  copyChip();
 
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", start);
