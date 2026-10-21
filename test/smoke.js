@@ -149,10 +149,9 @@ function run({ apiFails }) {
   return new Promise((r) => setTimeout(r, 50)).then(() => ({ doc, byId, stats }));
 }
 
-/* ---------------- ascii hero field ---------------- */
-// The ASCII background is the one effect that must survive a blocked anime.js
-// CDN, so it gets its own boot test.
-function runAsciiHero() {
+/* ---------------- ascii hero field + slippy words ---------------- */
+// Both run before the anime.js guard, so they must boot without it.
+function runAnim() {
   const calls = { fill: 0, raf: 0 };
   const rect = { left: 0, top: 0, right: 1200, bottom: 800, width: 1200, height: 800 };
   const ctx = {
@@ -167,18 +166,32 @@ function runAsciiHero() {
     getContext: () => ctx,
     getBoundingClientRect: () => rect,
   };
+  const row = { children: [{ offsetWidth: 100 }, { offsetWidth: 100 }] };
+  const slippy = {
+    children: [row],
+    clientWidth: 100,
+    props: {},
+    getBoundingClientRect: () => ({ top: 600, height: 200 }),
+    style: { setProperty(k, v) { slippy.props[k] = v; } },
+  };
   const sandbox = {
     console,
-    document: { querySelector: (sel) => (sel === "#asciiField" ? canvas : null) },
+    document: {
+      querySelector: (sel) => (sel === "#asciiField" ? canvas : sel === "#slippy" ? slippy : null),
+      documentElement: { clientHeight: 800 },
+    },
     matchMedia: () => ({ matches: false }),
     addEventListener: () => {},
+    getComputedStyle: () => ({ columnGap: "12px" }),
+    innerWidth: 1200,
+    innerHeight: 800,
     requestAnimationFrame: (cb) => { if (calls.raf++ === 0) cb(1000); return 0; },
   };
   sandbox.window = sandbox;
   sandbox.globalThis = sandbox;
   vm.createContext(sandbox);
   vm.runInContext(fs.readFileSync(path.join(ROOT, "assets/js/anim.js"), "utf8"), sandbox);
-  return { calls, canvas };
+  return { calls, canvas, slippy };
 }
 
 /* ---------------- tests ---------------- */
@@ -215,9 +228,15 @@ function runAsciiHero() {
   assert.deepStrictEqual(names.sort(), expected.sort(), "wrong projects under the Python filter");
 
   // 4. ASCII hero field paints cells without anime.js.
-  const hero = runAsciiHero();
+  const hero = runAnim();
   assert.ok(hero.canvas.width > 0 && hero.canvas.height > 0, "ascii canvas not sized");
   assert.ok(hero.calls.fill > 100, "ascii field drew nothing: " + hero.calls.fill);
+
+  // 5. Slippy words write a scroll-driven offset, capped by the row overflow.
+  const slip = parseFloat(hero.slippy.props["--slip"]);
+  assert.ok(!isNaN(slip), "slippy offset not written: " + JSON.stringify(hero.slippy.props));
+  // strip at 20% of the way in, travel capped by the 56px of row overflow
+  assert.ok(Math.abs(slip - -16.8) < 0.5, "slippy offset wrong: " + slip);
 
   console.log("✔ smoke tests passed");
 })().catch((e) => {

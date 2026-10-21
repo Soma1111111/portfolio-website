@@ -293,6 +293,36 @@ em { color: var(--text-dim); }
 .scroll-cue i::after { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 40%; background: var(--brand-2); animation: cue 1.9s ease-in-out infinite; }
 @keyframes cue { 0% { transform: translateY(-100%); } 100% { transform: translateY(260%); } }
 
+/* ---------------- slippy words ---------------- */
+/* Rows of badges that slide in opposite directions as the page scrolls
+   (performative-ui SlippyWords, ported to plain CSS vars). */
+.slippy {
+  position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 12px;
+  margin-bottom: 44px;
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.slippy-row {
+  display: flex; flex-wrap: nowrap; justify-content: center; align-items: center;
+  gap: 12px; width: 100%; will-change: transform;
+  transform: translate3d(calc(var(--slip, 0px) * var(--slip-dir, 1)), 0, 0);
+}
+.slippy-word {
+  display: inline-flex; align-items: center; white-space: nowrap;
+  padding: 9px 20px; border: 1px solid var(--border-2); border-radius: 999px;
+  background: var(--surface); backdrop-filter: blur(8px);
+  font-family: var(--display); font-size: 1.1rem; font-weight: 600; color: var(--text-dim);
+  transition: color 0.25s, border-color 0.25s, transform 0.25s, box-shadow 0.25s;
+}
+.slippy-word:hover {
+  color: var(--text); border-color: var(--brand-2); transform: translateY(-2px);
+  box-shadow: 0 10px 24px -14px var(--brand);
+}
+.slippy-word--grad {
+  border-color: transparent; color: #fff;
+  background: linear-gradient(135deg, var(--brand), #4f46e5 55%, var(--brand-2));
+}
+
 /* ---------------- marquee ---------------- */
 .marquee {
   position: relative; overflow: hidden; padding: 16px 0;
@@ -485,6 +515,9 @@ em { color: var(--text-dim); }
   .section { padding: 70px 0; }
   .hero { padding: 54px 0 66px; }
   .project-grid { grid-template-columns: 1fr; }
+  .slippy { gap: 8px; }
+  .slippy-row { gap: 8px; }
+  .slippy-word { padding: 6px 12px; font-size: 0.85rem; }
   .stat-row { gap: 26px; }
   .contact-card { padding: 46px 20px; }
   .orbit-wrap { width: 210px; height: 210px; }
@@ -499,4 +532,5 @@ em { color: var(--text-dim); }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .orbit, .avatar-ring, .scroll-cue i::after { animation: none !important; }
+  .slippy-row { transform: none !important; flex-wrap: wrap; }
 }

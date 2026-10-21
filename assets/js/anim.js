@@ -10,9 +10,10 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // The ASCII hero field does not need anime.js — start it before the guard so
-  // the background still renders when the CDN is blocked.
+  // The ASCII hero field and the slippy words strip do not need anime.js —
+  // start them before the guard so they still render when the CDN is blocked.
   asciiHero();
+  slippyWords();
 
   var A = window.anime;
   if (!A) return; // graceful: no anime.js -> static site, nothing hidden
@@ -321,6 +322,49 @@
     } else {
       requestAnimationFrame(loop);
     }
+  }
+
+  /* ---------------- slippy words ---------------- */
+  // Port of performative-ui's SlippyWords: rows of badges that slide in
+  // opposite directions, driven by scroll position.
+  function slippyWords() {
+    var host = $("#slippy");
+    if (!host || reduced) return;
+    var raf = 0;
+    var maxTravel = 0;
+
+    // The badge rows overflow the strip on each side. The slide has to stay
+    // inside that, otherwise a row would empty out at one edge.
+    function measure() {
+      var narrowest = Infinity;
+      for (var i = 0; i < host.children.length; i++) {
+        var row = host.children[i];
+        var w = 0;
+        for (var j = 0; j < row.children.length; j++) w += row.children[j].offsetWidth;
+        w += (parseFloat(getComputedStyle(row).columnGap) || 0) * Math.max(0, row.children.length - 1);
+        narrowest = Math.min(narrowest, (w - host.clientWidth) / 2);
+      }
+      maxTravel = Math.max(0, narrowest);
+      update();
+    }
+
+    function update() {
+      raf = 0;
+      var rect = host.getBoundingClientRect();
+      var vh = window.innerHeight || document.documentElement.clientHeight;
+      // 0 as the strip enters from the bottom, 1 as it leaves the top
+      var p = (vh - rect.top) / (vh + rect.height);
+      var intensity = Math.min(window.innerWidth < 760 ? 120 : 220, maxTravel);
+      var offset = (Math.min(1, Math.max(0, p)) - 0.5) * intensity;
+      host.style.setProperty("--slip", offset.toFixed(1) + "px");
+    }
+
+    function onScroll() { if (!raf) raf = requestAnimationFrame(update); }
+
+    measure();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", function () { measure(); onScroll(); }, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
   }
 
   /* ---------------- scroll progress ---------------- */
