@@ -66,7 +66,9 @@ for REPO in "${REPOS[@]}"; do
     continue
   fi
 
-  git -c user.name="Soma Datta" -c user.email="soma@users.noreply.github.com" commit -q -m "Deploy portfolio site"
+  # The email must be the one linked to the GitHub account, or the commits
+  # show up under a different user in the repo's contributor list.
+  git -c user.name="T Soma Datta" -c user.email="tsomadatta2004@gmail.com" commit -q -m "Deploy portfolio site"
 
   if [ "$DRY_RUN" = "1" ]; then
     git show --stat --oneline HEAD | sed 's/^/    /'
