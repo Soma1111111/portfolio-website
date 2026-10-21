@@ -220,6 +220,34 @@
     </div>
   </section>
 
+  <!-- ============ CODE ============ -->
+  <section class="section" id="code">
+    <div class="wrap">
+      <h2 class="section-title"><span class="hash">#</span> <span data-split>code, mostly</span></h2>
+      <p class="section-sub">One scan in, an estimate out — a slice of the brain-age pipeline.</p>
+
+      <div class="mock-ide" data-reveal>
+        <div class="mock-ide__chrome">
+          <span class="mock-ide__dot mock-ide__dot--red"></span>
+          <span class="mock-ide__dot mock-ide__dot--yellow"></span>
+          <span class="mock-ide__dot mock-ide__dot--green"></span>
+          <span class="mock-ide__tab">brain_age.py</span>
+          <span class="mock-ide__status"><i class="mock-ide__spin">◐</i> predicting</span>
+        </div>
+        <pre class="mock-ide__body"><code><span class="tok-com"># estimate age from a single fMRI scan</span>
+<span class="tok-key">import</span> torch
+
+model = torch.load(<span class="tok-str">"swin_unet.pt"</span>, map_location=<span class="tok-str">"cpu"</span>)
+scan = torch.load(<span class="tok-str">"subject_042.nii.gz"</span>)
+
+<span class="tok-key">with</span> torch.no_grad():
+    age = model(scan.unsqueeze(<span class="tok-num">0</span>)).item()
+
+<span class="tok-fn">print</span>(<span class="tok-str">f"predicted age: {age:.1f} ± 3.2 years"</span>)</code></pre>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ SKILLS ============ -->
   <section class="section" id="skills">
     <div class="wrap">
@@ -228,7 +256,7 @@
 
       <div class="slippy" id="slippy" aria-label="Skills and languages">
         <div class="slippy-row" style="--slip-dir: -1">
-          <span class="slippy-word slippy-word--grad">Python</span>
+          <span class="slippy-word">Python</span>
           <span class="slippy-word">Java</span>
           <span class="slippy-word">C</span>
           <span class="slippy-word">C++</span>
@@ -245,7 +273,7 @@
           <span class="slippy-word">Flutter</span>
         </div>
         <div class="slippy-row" style="--slip-dir: 1">
-          <span class="slippy-word slippy-word--grad">PyTorch</span>
+          <span class="slippy-word">PyTorch</span>
           <span class="slippy-word">TensorFlow</span>
           <span class="slippy-word">NumPy</span>
           <span class="slippy-word">Pandas</span>
@@ -261,7 +289,7 @@
           <span class="slippy-word">Game Design</span>
         </div>
         <div class="slippy-row" style="--slip-dir: -1">
-          <span class="slippy-word slippy-word--grad">Kubernetes</span>
+          <span class="slippy-word">Kubernetes</span>
           <span class="slippy-word">Docker</span>
           <span class="slippy-word">PostgreSQL</span>
           <span class="slippy-word">MongoDB</span>
