@@ -10,7 +10,7 @@ step, no bundler, nothing to install. Motion is driven by
 ```
 index.html              the whole site
 assets/css/style.css    styles (dark + light theme, responsive)
-assets/js/anim.js       anime.js layer: intro timeline, reveals, tilt, cursor, ASCII rain
+assets/js/anim.js       ASCII hero field + anime.js layer: intro timeline, reveals, tilt
 assets/js/main.js       theme, nav, typewriter, project filters, live repo loading
 assets/data/repos.json  curated project list + profile fallback
 test/smoke.js           boots main.js in a DOM stub and checks the loader
@@ -61,7 +61,8 @@ cache it.
 ## If anime.js does not load
 
 Every animation is additive: without the CDN the site still renders, reads and
-navigates — it just does not move.
+navigates — it just does not move. The ASCII hero background is plain canvas
+code, so it keeps running either way.
 
 ## Before you publish
 

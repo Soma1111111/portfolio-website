@@ -6,6 +6,14 @@
 (function () {
   "use strict";
 
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // The ASCII hero field does not need anime.js — start it before the guard so
+  // the background still renders when the CDN is blocked.
+  asciiHero();
+
   var A = window.anime;
   if (!A) return; // graceful: no anime.js -> static site, nothing hidden
 
@@ -13,10 +21,6 @@
   var stagger = A.stagger;
   var createTimeline = A.createTimeline;
   var utils = A.utils;
-
-  var $ = function (s, r) { return (r || document).querySelector(s); };
-  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
-  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------------- text splitting ---------------- */
   function splitChars(el) {
@@ -188,101 +192,135 @@
     }
   }
 
-  /* ---------------- ascii rain ---------------- */
-  function asciiRain() {
-    var canvas = $("#stars");
+  /* ---------------- ascii hero ---------------- */
+  // Vanilla port of performative-ui's AsciiHero (useAsciiField): a procedural
+  // ASCII field with a cursor spotlight. No React, no build step.
+  function asciiHero() {
+    var canvas = $("#asciiField");
     if (!canvas || !canvas.getContext) return;
     var ctx = canvas.getContext("2d");
-    var size = 14;
-    var cols = 0;
-    var drops = [];
-    var glyphs = "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉ0123456789ABCDEFXYZ<>[]{}/\\+=*#$%&";
-    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var host = canvas.parentNode;
+    if (!host) return;
 
-    function word() {
-      var s = "";
-      var n = 6 + Math.floor(Math.random() * 8);
-      for (var i = 0; i < n; i++) s += glyphs[Math.floor(Math.random() * glyphs.length)];
-      return s;
+    var SIZE = 12;
+    var RAMP = " .`'\",:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$";
+    var PALETTE = ["#a78bfa", "#ec4899", "#67e8f9", "#fbbf24"];
+    var BASE = 0.16;    // dim enough to sit behind body copy
+    var SPOT = 0.95;    // brightness under the cursor
+    var SPOT_R = 11;    // spotlight radius, in cells
+    var RIPPLE = 1.4;   // ripple amplitude
+    var RIPPLE_R = 6;   // ripple radius, in cells
+    var FRAME_MS = 60;
+
+    var cols = 0, rows = 0, cellW = 0, cellH = 0;
+    var field = new Float32Array(0);
+    var mouse = { x: -9999, y: -9999 };
+    var last = 0, colorIdx = -1;
+
+    function seed() {
+      field = new Float32Array(cols * rows);
+      for (var y = 0; y < rows; y++) {
+        for (var x = 0; x < cols; x++) {
+          var nx = (x / cols) * 2 - 1;
+          var ny = (y / rows) * 2 - 1;
+          var r = Math.sqrt(nx * nx + ny * ny);
+          var stripes = 0.5 + 0.5 * Math.sin(nx * 6 + ny * 2);
+          var radial = 1 - Math.min(1, r * 1.2);
+          field[y * cols + x] = 0.25 * stripes + 0.55 * radial;
+        }
+      }
     }
 
     function resize() {
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      var rect = host.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.font = size + "px " + "'JetBrains Mono', monospace";
-      cols = Math.ceil(window.innerWidth / size);
-      drops = [];
-      for (var i = 0; i < cols; i++) {
-        drops.push({ y: utils.random(-30, 0), s: word(), v: utils.random(0.35, 0.9) });
-      }
+      ctx.font = SIZE + "px 'JetBrains Mono', ui-monospace, monospace";
+      ctx.textBaseline = "top";
+      cellW = ctx.measureText("M").width || SIZE * 0.6;
+      cellH = SIZE * 1.15;
+      cols = Math.max(1, Math.floor(rect.width / cellW));
+      rows = Math.max(1, Math.floor(rect.height / cellH));
+      colorIdx = -1;
+      seed();
     }
 
-    function frame() {
-      // fade the previous frame out (works on both themes)
-      ctx.globalCompositeOperation = "destination-out";
-      ctx.fillStyle = "rgba(0,0,0,0.06)";
-      ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
-      ctx.globalCompositeOperation = "source-over";
+    function draw(t) {
+      var time = t * 0.001;
+      var rect = canvas.getBoundingClientRect();
+      var cx = (mouse.x - rect.left) / cellW;
+      var cy = (mouse.y - rect.top) / cellH;
+      // 24px of grace so the spotlight does not snap off at the edges
+      var inside = mouse.x >= rect.left - 24 && mouse.x <= rect.right + 24 &&
+                   mouse.y >= rect.top - 24 && mouse.y <= rect.bottom + 24;
 
-      for (var i = 0; i < cols; i++) {
-        var d = drops[i];
-        var x = i * size;
-        var y = d.y * size;
-        for (var k = 0; k < d.s.length; k++) {
-          ctx.fillStyle = k === 0
-            ? "rgba(214,244,255,0.55)"
-            : "rgba(125,211,252," + Math.max(0.08, 0.3 - k * 0.05).toFixed(2) + ")";
-          ctx.fillText(d.s[k], x, y + k * size);
-        }
-        d.y += d.v;
-        if (y > window.innerHeight + d.s.length * size) {
-          d.y = utils.random(-30, -5);
-          d.s = word();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+      var rampMax = RAMP.length - 1;
+      var spotR2 = SPOT_R * SPOT_R * 2;
+
+      for (var y = 0; y < rows; y++) {
+        for (var x = 0; x < cols; x++) {
+          var base = field[y * cols + x];
+          var wave = 0.15 * Math.sin(x * 0.18 + time * 1.4) * Math.cos(y * 0.22 - time * 1.1);
+
+          var dx = x - cx;
+          var dy = (y - cy) * 1.8;
+          var d2 = dx * dx + dy * dy;
+          var d = Math.sqrt(d2);
+
+          var ripple = 0;
+          if (inside) {
+            ripple = RIPPLE * Math.exp(-d2 / 80) -
+              0.6 * Math.exp(-((d - RIPPLE_R) * (d - RIPPLE_R)) / 30);
+          }
+
+          var v = Math.max(0, Math.min(1, base + wave + ripple));
+          var ch = RAMP[Math.floor(v * rampMax)];
+          if (ch === " ") continue;
+
+          var alpha = BASE;
+          if (inside) {
+            alpha = BASE + (SPOT - BASE) * Math.exp(-d2 / spotR2);
+            if (alpha < 0) alpha = 0;
+            if (alpha > 1) alpha = 1;
+          }
+          if (alpha <= 0.01) continue;
+
+          var idx = Math.floor(Math.abs((x * 0.1 + y * 0.07 + time * 0.12) % PALETTE.length)) % PALETTE.length;
+          if (idx !== colorIdx) {
+            ctx.fillStyle = PALETTE[idx];
+            colorIdx = idx;
+          }
+          ctx.globalAlpha = alpha;
+          ctx.fillText(ch, x * cellW, y * cellH);
         }
       }
-      requestAnimationFrame(frame);
+      ctx.globalAlpha = 1;
     }
 
-    resize();
+    function loop(t) {
+      requestAnimationFrame(loop);
+      if (t - last < FRAME_MS) return;
+      last = t;
+      if (!cols || !rows) { resize(); return; }
+      draw(t);
+    }
+
     window.addEventListener("resize", resize);
-    requestAnimationFrame(frame);
-  }
-
-  /* ---------------- cursor ---------------- */
-  function cursor() {
-    var box = $("#cursor");
-    if (!box || !window.matchMedia || !window.matchMedia("(hover: hover)").matches) return;
-    var dot = $(".cursor-dot", box);
-    var ring = $(".cursor-ring", box);
-    var mx = window.innerWidth / 2, my = window.innerHeight / 2;
-    var rx = mx, ry = my;
-
-    window.addEventListener("pointermove", function (e) {
-      mx = e.clientX;
-      my = e.clientY;
-      dot.style.left = mx + "px";
-      dot.style.top = my + "px";
-      box.classList.add("on");
+    window.addEventListener("mousemove", function (e) {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
     }, { passive: true });
 
-    (function loop() {
-      rx = utils.lerp(rx, mx, 0.13);
-      ry = utils.lerp(ry, my, 0.13);
-      ring.style.left = rx + "px";
-      ring.style.top = ry + "px";
+    resize();
+    if (reduced) {
+      draw(0); // one static frame — no motion for reduced-motion users
+    } else {
       requestAnimationFrame(loop);
-    })();
-
-    var hot = "a, button, .project, .skill-card, .mini-card, .gh-card, .chip, .filter-btn";
-    document.addEventListener("pointerover", function (e) {
-      if (e.target.closest && e.target.closest(hot)) box.classList.add("hot");
-    });
-    document.addEventListener("pointerout", function (e) {
-      if (e.target.closest && e.target.closest(hot)) box.classList.remove("hot");
-    });
-    document.addEventListener("mouseleave", function () { box.classList.add("hidden"); });
-    document.addEventListener("mouseenter", function () { box.classList.remove("hidden"); });
+    }
   }
 
   /* ---------------- scroll progress ---------------- */
@@ -428,7 +466,6 @@
 
     var arcsGroup = $("#dialArcs");
     var ticksGroup = $("#dialTicks");
-    var sweep = $("#dialSweep");
     var R = 168;
     var C = 2 * Math.PI * R;
     var MIX = [
@@ -485,27 +522,6 @@
     });
     animate(ticks, { opacity: [0, 0.55], duration: 700, delay: stagger(14) });
 
-    // sweeping radar, nudged by the cursor
-    var angle = { a: 0 };
-    var pointer = 0;
-    animate(angle, {
-      a: 360,
-      duration: 9000,
-      ease: "linear",
-      loop: true,
-      onUpdate: function () {
-        sweep.style.transform = "rotate(" + (angle.a + pointer) + "deg)";
-        sweep.style.transformOrigin = "200px 200px";
-      },
-    });
-
-    box.addEventListener("pointermove", function (e) {
-      var r = box.getBoundingClientRect();
-      var deg = Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width / 2)) * 180 / Math.PI;
-      pointer = deg * 0.35;
-    });
-    box.addEventListener("pointerleave", function () { pointer = 0; });
-
     box.addEventListener("pointerenter", function () {
       animate(box.querySelector(".dial-core"), { scale: 1.06, duration: 500, ease: "outElastic(1, .6)" });
     });
@@ -556,8 +572,6 @@
   }
 
   scrollProgress();
-  asciiRain();
-  cursor();
   watchProjects();
   dial();
   copyChip();

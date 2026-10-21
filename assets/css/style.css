@@ -79,7 +79,8 @@ em { color: var(--text-dim); }
 
 /* ---------------- backdrop ---------------- */
 .backdrop { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.stars { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0.22; }
+/* ASCII hero field — sits above the scrim so the cursor spotlight stays bright */
+.ascii-field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; }
 .aurora { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.55; will-change: transform; }
 .a1 { width: 620px; height: 620px; top: -240px; left: -160px; background: #7c3aed; }
 .a2 { width: 520px; height: 520px; top: 60px; right: -180px; background: #06b6d4; opacity: 0.3; }
@@ -100,7 +101,7 @@ em { color: var(--text-dim); }
 }
 /* soft scrim: keeps body copy readable over the moving background */
 .backdrop::after {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0; z-index: 1;
   background: radial-gradient(ellipse 75% 65% at 50% 45%, rgba(8, 8, 11, 0.62), rgba(8, 8, 11, 0.2) 60%, transparent 80%);
 }
 [data-theme="light"] .backdrop::after {
@@ -111,18 +112,7 @@ em { color: var(--text-dim); }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---------------- cursor + progress ---------------- */
-.cursor { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; mix-blend-mode: difference; opacity: 0; transition: opacity 0.3s; }
-.cursor.on { opacity: 1; }
-.cursor-dot { width: 7px; height: 7px; border-radius: 50%; background: #fff; position: absolute; transform: translate(-50%, -50%); }
-.cursor-ring {
-  width: 38px; height: 38px; border-radius: 50%; border: 1.5px solid rgba(255, 255, 255, 0.65);
-  position: absolute; transform: translate(-50%, -50%); transition: width 0.25s, height 0.25s, border-color 0.25s, opacity 0.25s;
-}
-.cursor.hot .cursor-ring { width: 64px; height: 64px; border-color: rgba(255, 255, 255, 0.9); }
-.cursor.hidden { opacity: 0; }
-@media (hover: none), (pointer: coarse) { .cursor { display: none; } }
-
+/* ---------------- scroll progress ---------------- */
 .scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 120; background: transparent; }
 .scroll-progress i {
   display: block; height: 100%; width: 0%;
@@ -254,7 +244,6 @@ em { color: var(--text-dim); }
 .dial-track.thin { stroke: var(--border); opacity: 0.6; }
 .dial-ticks line { stroke: var(--text-faint); stroke-width: 1.4; stroke-linecap: round; opacity: 0; }
 .dial-arcs circle { fill: none; stroke-width: 3.5; stroke-linecap: round; opacity: 0.9; }
-.dial-sweep path { fill: url(#sweepGrad); opacity: 0.13; filter: blur(3px); }
 .dial-core {
   position: relative; width: 46%; aspect-ratio: 1; border-radius: 50%; overflow: hidden;
   border: 1px solid var(--border-2); box-shadow: var(--shadow);

@@ -26,17 +26,13 @@
 </head>
 <body>
 
-<div class="cursor" id="cursor" aria-hidden="true">
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
-</div>
 <div class="scroll-progress" aria-hidden="true"><i id="progressBar"></i></div>
 <div class="noise" aria-hidden="true"></div>
 
 <a class="skip-link" href="#main">Skip to content</a>
 
 <div class="backdrop" aria-hidden="true">
-  <canvas class="stars" id="stars"></canvas>
+  <canvas class="ascii-field" id="asciiField" aria-hidden="true"></canvas>
   <div class="aurora a1"></div>
   <div class="aurora a2"></div>
   <div class="aurora a3"></div>
@@ -124,20 +120,10 @@
       <div class="hero-visual" data-hero="visual">
         <div class="dial" id="dial">
           <svg class="dial-svg" viewBox="0 0 400 400" aria-hidden="true">
-            <defs>
-              <linearGradient id="sweepGrad" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0%" stop-color="#22d3ee" />
-                <stop offset="55%" stop-color="#7c3aed" />
-                <stop offset="100%" stop-color="#f472b6" />
-              </linearGradient>
-            </defs>
             <circle class="dial-track" cx="200" cy="200" r="176" />
             <circle class="dial-track thin" cx="200" cy="200" r="146" />
             <g class="dial-ticks" id="dialTicks"></g>
             <g class="dial-arcs" id="dialArcs"></g>
-            <g class="dial-sweep" id="dialSweep">
-              <path d="M200 200 L200 34 A166 166 0 0 1 320 130 Z" />
-            </g>
           </svg>
           <div class="dial-core">
             <img class="avatar" src="https://avatars.githubusercontent.com/u/122380808?v=4" alt="T Soma Datta" width="180" height="180" />

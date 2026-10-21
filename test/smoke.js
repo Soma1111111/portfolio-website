@@ -149,6 +149,38 @@ function run({ apiFails }) {
   return new Promise((r) => setTimeout(r, 50)).then(() => ({ doc, byId, stats }));
 }
 
+/* ---------------- ascii hero field ---------------- */
+// The ASCII background is the one effect that must survive a blocked anime.js
+// CDN, so it gets its own boot test.
+function runAsciiHero() {
+  const calls = { fill: 0, raf: 0 };
+  const rect = { left: 0, top: 0, right: 1200, bottom: 800, width: 1200, height: 800 };
+  const ctx = {
+    setTransform() {}, clearRect() {},
+    measureText: () => ({ width: 7.2 }),
+    fillText() { calls.fill++; },
+    set fillStyle(v) {}, set globalAlpha(v) {}, set font(v) {}, set textBaseline(v) {},
+  };
+  const canvas = {
+    width: 0, height: 0,
+    parentNode: { getBoundingClientRect: () => rect },
+    getContext: () => ctx,
+    getBoundingClientRect: () => rect,
+  };
+  const sandbox = {
+    console,
+    document: { querySelector: (sel) => (sel === "#asciiField" ? canvas : null) },
+    matchMedia: () => ({ matches: false }),
+    addEventListener: () => {},
+    requestAnimationFrame: (cb) => { if (calls.raf++ === 0) cb(1000); return 0; },
+  };
+  sandbox.window = sandbox;
+  sandbox.globalThis = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "assets/js/anim.js"), "utf8"), sandbox);
+  return { calls, canvas };
+}
+
 /* ---------------- tests ---------------- */
 (async () => {
   // 1. API live: curated description survives, excluded repo dropped.
@@ -181,6 +213,11 @@ function run({ apiFails }) {
     "french-translation-char-level-seq2seq-", "diabetes-prediction-diabetes-dataset",
     "PygameHacknite", "cloud-project-new-kube"];
   assert.deepStrictEqual(names.sort(), expected.sort(), "wrong projects under the Python filter");
+
+  // 4. ASCII hero field paints cells without anime.js.
+  const hero = runAsciiHero();
+  assert.ok(hero.canvas.width > 0 && hero.canvas.height > 0, "ascii canvas not sized");
+  assert.ok(hero.calls.fill > 100, "ascii field drew nothing: " + hero.calls.fill);
 
   console.log("✔ smoke tests passed");
 })().catch((e) => {
