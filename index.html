@@ -224,26 +224,28 @@
   <section class="section" id="code">
     <div class="wrap">
       <h2 class="section-title"><span class="hash">#</span> <span data-split>code, mostly</span></h2>
-      <p class="section-sub">One scan in, an estimate out — a slice of the brain-age pipeline.</p>
+      <p class="section-sub">One card, one table, one legal draw — a slice of the Rust UNO engine.</p>
 
       <div class="mock-ide" data-reveal>
         <div class="mock-ide__chrome">
           <span class="mock-ide__dot mock-ide__dot--red"></span>
           <span class="mock-ide__dot mock-ide__dot--yellow"></span>
           <span class="mock-ide__dot mock-ide__dot--green"></span>
-          <span class="mock-ide__tab">brain_age.py</span>
-          <span class="mock-ide__status"><i class="mock-ide__spin">◐</i> predicting</span>
+          <span class="mock-ide__tab">uno.rs</span>
+          <span class="mock-ide__status"><i class="mock-ide__spin">◐</i> writing…</span>
         </div>
-        <pre class="mock-ide__body"><code><span class="tok-com"># estimate age from a single fMRI scan</span>
-<span class="tok-key">import</span> torch
+        <pre class="mock-ide__body"><code id="ideCode"><span class="tok-com">// uno.rs — draw a card that keeps the table legal</span>
+<span class="tok-key">use</span> <span class="tok-fn">rand::seq::SliceRandom</span>;
 
-model = torch.load(<span class="tok-str">"swin_unet.pt"</span>, map_location=<span class="tok-str">"cpu"</span>)
-scan = torch.load(<span class="tok-str">"subject_042.nii.gz"</span>)
+<span class="tok-key">fn</span> <span class="tok-fn">draw</span>(deck: &amp;<span class="tok-key">mut</span> <span class="tok-type">Vec</span>&lt;<span class="tok-type">Card</span>&gt;, table: &amp;[<span class="tok-type">Card</span>]) -&gt; <span class="tok-type">Option</span>&lt;<span class="tok-type">Card</span>&gt; {
+    deck.<span class="tok-fn">shuffle</span>(&amp;mut <span class="tok-fn">rand::thread_rng</span>());
+    <span class="tok-key">let</span> card = deck.<span class="tok-fn">pop</span>()?;
 
-<span class="tok-key">with</span> torch.no_grad():
-    age = model(scan.unsqueeze(<span class="tok-num">0</span>)).item()
-
-<span class="tok-fn">print</span>(<span class="tok-str">f"predicted age: {age:.1f} ± 3.2 years"</span>)</code></pre>
+    <span class="tok-key">match</span> table.<span class="tok-fn">last</span>() {
+        <span class="tok-type">Some</span>(top) <span class="tok-key">if</span> card.color == top.color || card.value == top.value =&gt; <span class="tok-type">Some</span>(card),
+        _ =&gt; <span class="tok-type">None</span>,
+    }
+}</code></pre>
       </div>
     </div>
   </section>

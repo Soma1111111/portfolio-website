@@ -194,6 +194,66 @@ function runAnim() {
   return { calls, canvas, slippy };
 }
 
+/* ---------------- streaming mock IDE ---------------- */
+// The code window splits its markup into per-character spans and reveals
+// them in order. Check the split and the reveal with a tiny DOM stub.
+function runIDE() {
+  const el = (text, kids) => {
+    const node = {
+      nodeType: 1,
+      textContent: text || "",
+      childNodes: kids || [],
+      replaceChild(next, old) {
+        const i = this.childNodes.indexOf(old);
+        const add = next.childNodes.length ? next.childNodes : [next];
+        this.childNodes.splice(i, 1, ...add);
+      },
+      appendChild(n) { this.childNodes.push(n); return n; },
+    };
+    node._s = new Set();
+    node.classList = {
+      add(c) { node._s.add(c); },
+      remove(c) { node._s.delete(c); },
+      contains(c) { return node._s.has(c); },
+    };
+    Object.defineProperty(node, "className", {
+      get() { return [...node._s].join(" "); },
+      set(v) { node._s = new Set(String(v).split(/\s+/).filter(Boolean)); },
+    });
+    return node;
+  };
+
+  const code = el(null, [{ nodeType: 3, textContent: "fn draw() {}" }]);
+  const sandbox = {
+    console,
+    document: {
+      querySelector: (sel) => (sel === "#ideCode" ? code : null),
+      createElement: () => el(null, []),
+      createDocumentFragment: () => el(null, []),
+    },
+    matchMedia: () => ({ matches: false }),
+    addEventListener: () => {},
+    // run the stream to the end, but skip the 3.5s loop pause
+    setTimeout: (cb, ms) => { if (ms < 1000) cb(); return 0; },
+    clearTimeout: () => {},
+  };
+  sandbox.window = sandbox;
+  sandbox.globalThis = sandbox;
+  vm.createContext(sandbox);
+  vm.runInContext(fs.readFileSync(path.join(ROOT, "assets/js/anim.js"), "utf8"), sandbox);
+
+  const found = { chars: 0, on: 0, caret: 0 };
+  (function walk(n) {
+    if (n.classList && n.classList.contains("ide-ch")) {
+      found.chars++;
+      if (n.classList.contains("on")) found.on++;
+    }
+    if (n.classList && n.classList.contains("ide-caret")) found.caret++;
+    (n.childNodes || []).forEach(walk);
+  })(code);
+  return found;
+}
+
 /* ---------------- tests ---------------- */
 (async () => {
   // 1. API live: curated description survives, excluded repo dropped.
@@ -237,6 +297,12 @@ function runAnim() {
   assert.ok(!isNaN(slip), "slippy offset not written: " + JSON.stringify(hero.slippy.props));
   // strip at 20% of the way in, travel capped by the 56px of row overflow
   assert.ok(Math.abs(slip - -16.8) < 0.5, "slippy offset wrong: " + slip);
+
+  // 6. The code window splits into one span per character and reveals them.
+  const ide = runIDE();
+  assert.strictEqual(ide.chars, 12, "expected one span per character, got " + ide.chars);
+  assert.strictEqual(ide.on, 12, "not every character was revealed");
+  assert.strictEqual(ide.caret, 1, "streaming caret missing");
 
   console.log("✔ smoke tests passed");
 })().catch((e) => {

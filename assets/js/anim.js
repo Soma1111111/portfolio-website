@@ -10,10 +10,12 @@
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
   var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  // The ASCII hero field and the slippy words strip do not need anime.js —
-  // start them before the guard so they still render when the CDN is blocked.
+  // The ASCII hero field, the slippy words strip and the streaming code
+  // window do not need anime.js — start them before the guard so they still
+  // render when the CDN is blocked.
   asciiHero();
   slippyWords();
+  streamIDE();
 
   var A = window.anime;
   if (!A) return; // graceful: no anime.js -> static site, nothing hidden
@@ -365,6 +367,60 @@
     window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", function () { measure(); onScroll(); }, { passive: true });
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  }
+
+  /* ---------------- streaming mock IDE ---------------- */
+  // Types the code window out character by character with a trailing caret,
+  // then loops. Without JS the full snippet is already in the markup.
+  function streamIDE() {
+    var code = $("#ideCode");
+    if (!code || reduced) return;
+
+    // Split every text node into one span per character, so the reveal can
+    // walk the code in order and keep the syntax colours.
+    var chars = [];
+    (function split(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (kid) {
+        if (kid.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          kid.textContent.split("").forEach(function (c) {
+            var s = document.createElement("span");
+            s.className = "ide-ch";
+            s.textContent = c;
+            frag.appendChild(s);
+            chars.push(s);
+          });
+          node.replaceChild(frag, kid);
+        } else if (kid.nodeType === 1) {
+          split(kid);
+        }
+      });
+    })(code);
+    if (!chars.length) return;
+
+    var caret = document.createElement("i");
+    caret.className = "ide-caret";
+    code.appendChild(caret);
+
+    var i = 0;
+
+    function tick() {
+      if (i >= chars.length) {
+        setTimeout(function () {
+          chars.forEach(function (c) { c.classList.remove("on"); });
+          i = 0;
+          tick();
+        }, 3500);
+        return;
+      }
+      var ch = chars[i++];
+      ch.classList.add("on");
+      var ms = 6 + Math.random() * 12;
+      if (ch.textContent === "\n") ms += 90;
+      setTimeout(tick, ms);
+    }
+
+    tick();
   }
 
   /* ---------------- scroll progress ---------------- */
